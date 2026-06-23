@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Essential Data Structures</title>
+  <meta name="description" content="An interactive conversational presentation on essential data structures in computer science." />
+  <style>
+    :root {
+      --bg: #0b1020;
+      --bg-2: #121a33;
+      --card: rgba(255,255,255,0.09);
+      --card-strong: rgba(255,255,255,0.14);
+      --text: #f6f7fb;
+      --muted: #b8c2d9;
+      --accent: #7c3aed;
+      --accent-2: #06b6d4;
+      --accent-3: #f59e0b;
+      --good: #22c55e;
+      --shadow: 0 24px 80px rgba(0,0,0,.35);
+      --radius: 28px;
+      --max: 1120px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 10%, rgba(124,58,237,.35), transparent 34%),
+        radial-gradient(circle at 90% 20%, rgba(6,182,212,.28), transparent 34%),
+        radial-gradient(circle at 70% 85%, rgba(245,158,11,.18), transparent 36%),
+        linear-gradient(135deg, var(--bg), #050816 65%);
+      overflow: hidden;
+    }
+
+    a { color: inherit; }
+    button { font: inherit; }
+
+    .progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: rgba(255,255,255,.12);
+      z-index: 20;
+    }
+    .progress span {
+      display: block;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
+      box-shadow: 0 0 24px rgba(6,182,212,.7);
+      transition: width .35s ease;
+    }
+
+    .deck {
+      height: 100vh;
+      width: 100vw;
+      display: grid;
+      place-items: center;
+      padding: 38px 22px 92px;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 38px 22px 92px;
+      max-width: var(--max);
+      margin: auto;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transform: translateY(18px) scale(.985);
+      transition: opacity .32s ease, transform .32s ease;
+    }
+    .slide.active {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .panel {
+      width: min(100%, var(--max));
+      min-height: min(720px, calc(100vh - 160px));
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: var(--radius);
+      padding: clamp(28px, 5vw, 64px);
+      background: linear-gradient(145deg, rgba(255,255,255,.12), rgba(255,255,255,.06));
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      overflow: hidden;
+      position: relative;
+    }
+    .panel::before {
+      content: "";
+      position: absolute;
+      width: 320px;
+      height: 320px;
+      border-radius: 999px;
+      right: -130px;
+      top: -120px;
+      background: radial-gradient(circle, rgba(6,182,212,.35), transparent 66%);
+      pointer-events: none;
+    }
+    .panel::after {
+      content: "";
+      position: absolute;
+      width: 240px;
+      height: 240px;
+      border-radius: 999px;
+      left: -90px;
+      bottom: -90px;
+      background: radial-gradient(circle, rgba(124,58,237,.35), transparent 66%);
+      pointer-events: none;
+    }
+
+    .content { position: relative; z-index: 1; }
+    .eyebrow {
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+      color: var(--muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .16em;
+      font-size: 13px;
+      margin-bottom: 18px;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 32px;
+      height: 3px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    }
+    h1, h2 { margin: 0; letter-spacing: -0.055em; line-height: .95; }
+    h1 { font-size: clamp(54px, 10vw, 112px); max-width: 900px; }
+    h2 { font-size: clamp(40px, 7vw, 74px); max-width: 900px; }
+    p.lead {
+      color: var(--muted);
+      font-size: clamp(20px, 2.7vw, 30px);
+      line-height: 1.35;
+      max-width: 820px;
+      margin: 24px 0 0;
+    }
+    .two-col {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(280px, .85fr);
+      gap: clamp(24px, 5vw, 56px);
+      align-items: center;
+      margin-top: 28px;
+    }
+    .bullets {
+      display: grid;
+      gap: 16px;
+      margin: 28px 0 0;
+      padding: 0;
+      list-style: none;
+      font-size: clamp(18px, 2.3vw, 26px);
+      line-height: 1.35;
+      color: #eef2ff;
+    }
+    .bullets li {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .bullets li::before {
+      content: "";
+      flex: 0 0 12px;
+      height: 12px;
+      border-radius: 999px;
+      margin-top: .55em;
+      background: linear-gradient(135deg, var(--accent-2), var(--accent-3));
+      box-shadow: 0 0 18px rgba(6,182,212,.45);
+    }
+    .visual {
+      min-height: 330px;
+      border-radius: 26px;
+      background: rgba(5,8,22,.38);
+      border: 1px solid rgba(255,255,255,.14);
+      display: grid;
+      place-items: center;
+      padding: 26px;
+      position: relative;
+      overflow: hidden;
+    }
+    .visual small {
+      color: var(--muted);
+      position: absolute;
+      bottom: 16px;
+      left: 18px;
+      right: 18px;
+      text-align: center;
+    }
+    .chips { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+    .chip {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.14);
+      color: #e9eefc;
+      font-weight: 700;
+    }
+    .diagram { width: 100%; max-width: 380px; display: grid; gap: 12px; }
+    .cell, .node, .tree-node, .kv {
+      background: var(--card-strong);
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 16px;
+      padding: 14px 18px;
+      text-align: center;
+      font-weight: 800;
+      box-shadow: 0 12px 35px rgba(0,0,0,.18);
+    }
+    .array { display: grid; grid-template-columns: repeat(5,1fr); gap: 8px; width: 100%; }
+    .linked { display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap; }
+    .arrow { color: var(--accent-2); font-weight: 900; font-size: 24px; }
+    .stack { display: flex; flex-direction: column-reverse; gap: 8px; max-width: 220px; margin: auto; }
+    .queue { display: grid; grid-template-columns: repeat(5,1fr); gap: 8px; width: 100%; align-items: center; }
+    .tree { display: grid; place-items: center; gap: 14px; width: 100%; }
+    .tree .row { display: flex; gap: 16px; justify-content: center; }
+    .big-compare {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 18px;
+      margin-top: 32px;
+    }
+    .compare-card {
+      border-radius: 24px;
+      background: rgba(255,255,255,.09);
+      border: 1px solid rgba(255,255,255,.14);
+      padding: 24px;
+    }
+    .compare-card h3 { margin: 0 0 12px; font-size: clamp(26px, 4vw, 44px); }
+    .compare-card p { color: var(--muted); font-size: 20px; line-height: 1.45; margin: 0; }
+
+    .controls {
+      position: fixed;
+      left: 50%;
+      bottom: 20px;
+      transform: translateX(-50%);
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      background: rgba(4,7,18,.62);
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius: 999px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 12px 40px rgba(0,0,0,.28);
+    }
+    .controls button, .overview-card button {
+      border: 0;
+      border-radius: 999px;
+      color: var(--text);
+      background: rgba(255,255,255,.1);
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: transform .18s ease, background .18s ease;
+      font-weight: 800;
+    }
+    .controls button:hover, .overview-card button:hover { transform: translateY(-1px); background: rgba(255,255,255,.17); }
+    .counter { color: var(--muted); min-width: 86px; text-align: center; font-weight: 800; }
+    .help {
+      position: fixed;
+      right: 20px;
+      bottom: 26px;
+      color: var(--muted);
+      font-size: 13px;
+      z-index: 25;
+    }
+    .overview {
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      display: none;
+      overflow: auto;
+      padding: 36px 22px;
+      background: rgba(5,8,22,.88);
+      backdrop-filter: blur(18px);
+    }
+    .overview.open { display: block; }
+    .overview-inner { max-width: 1200px; margin: 0 auto; }
+    .overview-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 22px; }
+    .overview-head h2 { font-size: clamp(34px, 6vw, 62px); }
+    .overview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+    .overview-card {
+      min-height: 150px;
+      border-radius: 22px;
+      padding: 18px;
+      background: rgba(255,255,255,.09);
+      border: 1px solid rgba(255,255,255,.14);
+      cursor: pointer;
+      transition: transform .18s ease, background .18s ease;
+    }
+    .overview-card:hover { transform: translateY(-3px); background: rgba(255,255,255,.14); }
+    .overview-card strong { display: block; font-size: 19px; margin-bottom: 10px; }
+    .overview-card span { color: var(--muted); line-height: 1.35; }
+    .kbd { color: #fff; background: rgba(255,255,255,.14); padding: 2px 7px; border-radius: 7px; border: 1px solid rgba(255,255,255,.16); }
+
+    @media (max-width: 820px) {
+      body { overflow: auto; }
+      .deck { min-height: 100vh; height: auto; padding-bottom: 108px; }
+      .slide { position: relative; inset: auto; min-height: calc(100vh - 146px); }
+      .two-col { grid-template-columns: 1fr; }
+      .visual { min-height: 240px; }
+      .big-compare { grid-template-columns: 1fr; }
+      .help { display: none; }
+      .panel { min-height: auto; }
+      .controls { width: calc(100% - 24px); justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+  <main class="deck" id="deck" aria-live="polite"></main>
+
+  <nav class="controls" aria-label="Presentation controls">
+    <button id="prevBtn" title="Previous slide: Left arrow or Page Up">← Prev</button>
+    <div class="counter" id="counter">1 / 1</div>
+    <button id="nextBtn" title="Next slide: Right arrow, Space, or Page Down">Next →</button>
+    <button id="overviewBtn" title="Overview: O">Overview</button>
+  </nav>
+
+  <div class="help">Shortcuts: <span class="kbd">←</span> <span class="kbd">→</span> <span class="kbd">Space</span> <span class="kbd">O</span> <span class="kbd">Esc</span></div>
+
+  <section class="overview" id="overview" aria-modal="true" role="dialog" aria-label="Slide overview">
+    <div class="overview-inner">
+      <div class="overview-head">
+        <h2>Overview</h2>
+        <button id="closeOverview">Close</button>
+      </div>
+      <div class="overview-grid" id="overviewGrid"></div>
+    </div>
+  </section>
+
+  <script>
+    const slides = [
+      {
+        type: 'title',
+        eyebrow: 'Computer Science Fundamentals',
+        title: 'Essential Data Structures',
+        lead: 'A conversational guide to the building blocks that help programs organize, search, and move data efficiently.',
+        chips: ['Arrays', 'Lists', 'Stacks', 'Queues', 'Hash Tables', 'Trees', 'Search']
+      },
+      {
+        title: 'Arrays: the numbered shelf',
+        lead: 'An array is a fixed-size, indexed collection. When you know the position, lookup is fast—like grabbing book #4 from a numbered shelf.',
+        bullets: ['Best for fast lookups by index', 'Great for static storage', 'Often used underneath other data structures'],
+        visual: 'array'
+      },
+      {
+        title: 'Linked Lists: flexible chains',
+        lead: 'A linked list stores data in nodes. Each node points to the next one, so the structure can grow and shrink without needing one continuous block of memory.',
+        bullets: ['Good for dynamic memory allocation', 'Useful for building stacks and queues', 'Efficient insertions and deletions when you already have the right node'],
+        visual: 'linked'
+      },
+      {
+        title: 'Doubly Linked Lists: forward and back',
+        lead: 'A doubly linked list gives each node two links: one to the next node and one to the previous node. That extra pointer makes reverse movement easier.',
+        bullets: ['Easier reverse traversal', 'Efficient work at both ends', 'Helpful when navigation matters, such as browser-like history'],
+        visual: 'doubly'
+      },
+      {
+        title: 'Stacks: last in, first out',
+        lead: 'A stack behaves like a pile of plates. The most recent item is the easiest one to remove.',
+        bullets: ['Undo and redo features', 'Backtracking problems', 'Depth-first search uses stack behavior'],
+        visual: 'stack'
+      },
+      {
+        title: 'Queues: first in, first out',
+        lead: 'A queue behaves like a line at a coffee shop. The first item added is the first item served.',
+        bullets: ['Task scheduling', 'Order processing', 'Printer queues and request pipelines'],
+        visual: 'queue'
+      },
+      {
+        title: 'LIFO vs FIFO',
+        lead: 'These two rules describe who leaves first: the newest item or the oldest item.',
+        compare: [
+          ['LIFO', 'Last in, first out. Think stack, undo button, browser backtracking.'],
+          ['FIFO', 'First in, first out. Think queue, customer service line, printer jobs.']
+        ]
+      },
+      {
+        title: 'Hash Tables: fast answers by key',
+        lead: 'A hash table stores key-value pairs. Instead of searching every item, it uses a hash function to jump near the answer.',
+        bullets: ['Database indexing', 'Caching frequently used data', 'Implementing dictionary-like structures'],
+        visual: 'hash'
+      },
+      {
+        title: 'Dictionaries: named values',
+        lead: 'A dictionary is a practical, hash-based collection for mapping keys to values. In many languages, this is the structure you use every day.',
+        bullets: ['Fast retrieval of mapped data', 'Symbol tables in compilers', 'Configuration, lookups, and counting problems'],
+        visual: 'dict'
+      },
+      {
+        title: 'Trees: data with hierarchy',
+        lead: 'Trees represent parent-child relationships. They are perfect when data naturally branches into categories or decisions.',
+        bullets: ['File systems', 'Search algorithms', 'AI decision trees'],
+        visual: 'tree'
+      },
+      {
+        title: 'Binary Search Trees: ordered branching',
+        lead: 'A binary search tree keeps smaller values on the left and larger values on the right. That ordering turns searching into a guided path.',
+        bullets: ['Efficient searching when balanced', 'Dynamic data storage', 'A bridge to more advanced trees'],
+        visual: 'bst'
+      },
+      {
+        title: 'Depth-First Search: go deep first',
+        lead: 'DFS explores one path as far as possible, then backtracks. It is a natural fit for puzzles, mazes, and exploring possibilities.',
+        bullets: ['Solving mazes', 'Pathfinding and graph traversal', 'Uses stack behavior, either explicit or through recursion'],
+        visual: 'dfs'
+      },
+      {
+        title: 'Breadth-First Search: explore by layers',
+        lead: 'BFS checks all neighbors first, then moves outward level by level. That makes it useful when the shortest unweighted path matters.',
+        bullets: ['Shortest path finding', 'Social network degrees of separation', 'Uses queue behavior'],
+        visual: 'bfs'
+      },
+      {
+        title: 'DFS vs BFS',
+        lead: 'Both search graphs and trees, but they ask different questions first: “How far can this path go?” versus “What is closest to me?”',
+        compare: [
+          ['DFS', 'Stack-based, deeper exploration first. Strong for puzzles and exhaustive searching.'],
+          ['BFS', 'Queue-based, level-by-level exploration. Strong for shortest paths.']
+        ]
+      },
+      {
+        title: 'How to choose',
+        lead: 'Start with the operation you care about most. Fast lookup? Frequent insertion? Ordered traversal? Shortest path?',
+        bullets: ['Need direct indexed access: array', 'Need add/remove at ends: stack, queue, or linked list', 'Need key lookup: hash table or dictionary', 'Need hierarchy or ordered search: tree or BST']
+      },
+      {
+        title: 'Final thought',
+        lead: 'Data structures are not just definitions to memorize. They are design choices. The right one makes your code simpler, faster, and easier to reason about.',
+        chips: ['Organize', 'Search', 'Insert', 'Delete', 'Traverse', 'Optimize']
+      }
+    ];
+
+    const deck = document.querySelector('#deck');
+    const overview = document.querySelector('#overview');
+    const overviewGrid = document.querySelector('#overviewGrid');
+    const progressBar = document.querySelector('#progressBar');
+    const counter = document.querySelector('#counter');
+    let index = Number(new URLSearchParams(location.search).get('slide')) || 0;
+    index = Math.min(Math.max(index, 0), slides.length - 1);
+
+    function visual(type) {
+      const map = {
+        array: `<div class="diagram array"><div class="cell">0</div><div class="cell">1</div><div class="cell">2</div><div class="cell">3</div><div class="cell">4</div></div><small>Index points directly to position.</small>`,
+        linked: `<div class="linked"><div class="node">A</div><span class="arrow">→</span><div class="node">B</div><span class="arrow">→</span><div class="node">C</div><span class="arrow">→</span><div class="node">null</div></div><small>Each node knows where the next one lives.</small>`,
+        doubly: `<div class="linked"><span class="arrow">↔</span><div class="node">A</div><span class="arrow">↔</span><div class="node">B</div><span class="arrow">↔</span><div class="node">C</div><span class="arrow">↔</span></div><small>Move forward or backward through the chain.</small>`,
+        stack: `<div class="diagram stack"><div class="cell">first</div><div class="cell">middle</div><div class="cell">top</div></div><small>Push and pop happen at the top.</small>`,
+        queue: `<div class="queue"><div class="cell">1st</div><div class="cell">2nd</div><div class="cell">3rd</div><div class="cell">4th</div><div class="cell">5th</div></div><small>Enter at the back. Leave from the front.</small>`,
+        hash: `<div class="diagram"><div class="kv">studentId → record</div><div class="kv">email → account</div><div class="kv">word → count</div></div><small>Keys map quickly to values.</small>`,
+        dict: `<div class="diagram"><div class="kv">"name" : "Ada"</div><div class="kv">"role" : "Programmer"</div><div class="kv">"score" : 98</div></div><small>Human-friendly keys make code readable.</small>`,
+        tree: `<div class="tree"><div class="tree-node">Root</div><div class="row"><div class="tree-node">Child</div><div class="tree-node">Child</div></div><div class="row"><div class="tree-node">Leaf</div><div class="tree-node">Leaf</div><div class="tree-node">Leaf</div></div></div><small>Hierarchy creates structure.</small>`,
+        bst: `<div class="tree"><div class="tree-node">50</div><div class="row"><div class="tree-node">25</div><div class="tree-node">75</div></div><div class="row"><div class="tree-node">10</div><div class="tree-node">30</div><div class="tree-node">60</div><div class="tree-node">90</div></div></div><small>Left is smaller. Right is larger.</small>`,
+        dfs: `<div class="tree"><div class="tree-node">A</div><div class="row"><div class="tree-node">B</div><div class="tree-node">C</div></div><div class="row"><div class="tree-node">D</div><div class="tree-node">E</div><div class="tree-node">F</div></div></div><small>Path idea: A → B → D, then backtrack.</small>`,
+        bfs: `<div class="tree"><div class="tree-node">A</div><div class="row"><div class="tree-node">B</div><div class="tree-node">C</div></div><div class="row"><div class="tree-node">D</div><div class="tree-node">E</div><div class="tree-node">F</div></div></div><small>Layer idea: A, then B/C, then D/E/F.</small>`
+      };
+      return `<div class="visual">${map[type] || ''}</div>`;
+    }
+
+    function slideTemplate(s, i) {
+      const eyebrow = s.eyebrow || `Slide ${i + 1}`;
+      const chips = s.chips ? `<div class="chips">${s.chips.map(c => `<span class="chip">${c}</span>`).join('')}</div>` : '';
+      const bullets = s.bullets ? `<ul class="bullets">${s.bullets.map(b => `<li>${b}</li>`).join('')}</ul>` : '';
+      const compare = s.compare ? `<div class="big-compare">${s.compare.map(([h,p]) => `<div class="compare-card"><h3>${h}</h3><p>${p}</p></div>`).join('')}</div>` : '';
+      if (s.visual) {
+        return `<section class="slide" data-title="${s.title}"><article class="panel"><div class="content"><div class="eyebrow">${eyebrow}</div><h2>${s.title}</h2><div class="two-col"><div><p class="lead">${s.lead}</p>${bullets}</div>${visual(s.visual)}</div></div></article></section>`;
+      }
+      return `<section class="slide" data-title="${s.title}"><article class="panel"><div class="content"><div class="eyebrow">${eyebrow}</div>${s.type === 'title' ? `<h1>${s.title}</h1>` : `<h2>${s.title}</h2>`}<p class="lead">${s.lead}</p>${bullets}${compare}${chips}</div></article></section>`;
+    }
+
+    deck.innerHTML = slides.map(slideTemplate).join('');
+    const slideEls = [...document.querySelectorAll('.slide')];
+    overviewGrid.innerHTML = slides.map((s, i) => `<button class="overview-card" data-go="${i}"><strong>${i + 1}. ${s.title}</strong><span>${s.lead}</span></button>`).join('');
+
+    function render() {
+      slideEls.forEach((el, i) => el.classList.toggle('active', i === index));
+      counter.textContent = `${index + 1} / ${slides.length}`;
+      progressBar.style.width = `${((index + 1) / slides.length) * 100}%`;
+      document.title = `${slides[index].title} · Essential Data Structures`;
+      history.replaceState(null, '', `${location.pathname}?slide=${index}`);
+    }
+
+    function next() { index = Math.min(index + 1, slides.length - 1); render(); }
+    function prev() { index = Math.max(index - 1, 0); render(); }
+    function go(i) { index = Math.min(Math.max(i, 0), slides.length - 1); overview.classList.remove('open'); render(); }
+    function toggleOverview(force) { overview.classList.toggle('open', force ?? !overview.classList.contains('open')); }
+
+    document.querySelector('#nextBtn').addEventListener('click', next);
+    document.querySelector('#prevBtn').addEventListener('click', prev);
+    document.querySelector('#overviewBtn').addEventListener('click', () => toggleOverview(true));
+    document.querySelector('#closeOverview').addEventListener('click', () => toggleOverview(false));
+    overviewGrid.addEventListener('click', e => {
+      const card = e.target.closest('[data-go]');
+      if (card) go(Number(card.dataset.go));
+    });
+
+    window.addEventListener('keydown', e => {
+      const tag = document.activeElement?.tagName?.toLowerCase();
+      if (tag === 'input' || tag === 'textarea') return;
+      if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); next(); }
+      if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prev(); }
+      if (e.key.toLowerCase() === 'o') { e.preventDefault(); toggleOverview(); }
+      if (e.key === 'Escape') toggleOverview(false);
+      if (e.key === 'Home') { index = 0; render(); }
+      if (e.key === 'End') { index = slides.length - 1; render(); }
+    });
+
+    let startX = null;
+    window.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
+    window.addEventListener('touchend', e => {
+      if (startX === null) return;
+      const delta = e.changedTouches[0].clientX - startX;
+      if (Math.abs(delta) > 55) delta < 0 ? next() : prev();
+      startX = null;
+    }, { passive: true });
+
+    render();
+  </script>
+</body>
+</html>
