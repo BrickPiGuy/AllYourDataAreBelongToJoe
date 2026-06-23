@@ -255,6 +255,60 @@
       max-height: 100%;
       object-fit: contain;
       border-radius: 20px;
+
+      .lightbox {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 50;
+        padding: 20px;
+        overflow: auto;
+      }
+      .lightbox.open {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .lightbox-content {
+        position: relative;
+        max-width: 95vw;
+        max-height: 95vh;
+      }
+      .lightbox img {
+        width: 100%;
+        height: auto;
+        max-height: 95vh;
+        object-fit: contain;
+      }
+      .lightbox-close {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 40px;
+        height: 40px;
+        border: none;
+        background: rgba(255, 255, 255, 0.2);
+        color: #fff;
+        font-size: 28px;
+        cursor: pointer;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s ease;
+        z-index: 51;
+      }
+      .lightbox-close:hover {
+        background: rgba(255, 255, 255, 0.35);
+      }
+      .cheat-sheet-clickable {
+        cursor: zoom-in;
+      }
+      .cheat-sheet-clickable:hover {
+        opacity: 0.85;
+        transition: opacity 0.2s ease;
+      }
     }
 
     .controls {
@@ -362,6 +416,12 @@
   <script>
     const slides = [
       {
+        <div class="lightbox" id="lightbox">
+          <button class="lightbox-close" id="lightboxClose">&times;</button>
+          <div class="lightbox-content">
+            <img id="lightboxImage" src="" alt="Magnified image" />
+          </div>
+        </div>
         type: 'title-image',
         poster: true,
         title: 'Virtual Essential Data Structures Workshop',
@@ -555,6 +615,7 @@
         bst: `<div class="tree"><div class="tree-node">50</div><div class="row"><div class="tree-node">25</div><div class="tree-node">75</div></div><div class="row"><div class="tree-node">10</div><div class="tree-node">30</div><div class="tree-node">60</div><div class="tree-node">90</div></div></div><small>Left is smaller. Right is larger.</small>`,
         dfs: `<div class="tree"><div class="tree-node">A</div><div class="row"><div class="tree-node">B</div><div class="tree-node">C</div></div><div class="row"><div class="tree-node">D</div><div class="tree-node">E</div><div class="tree-node">F</div></div></div><small>Path idea: A → B → D, then backtrack.</small>`,
         bfs: `<div class="tree"><div class="tree-node">A</div><div class="row"><div class="tree-node">B</div><div class="tree-node">C</div></div><div class="row"><div class="tree-node">D</div><div class="tree-node">E</div><div class="tree-node">F</div></div></div><small>Layer idea: A, then B/C, then D/E/F.</small>`,
+          'big-o-cheat': `<img src="big-o-cheat-sheet-poster.png" alt="Big O Complexity Cheat Sheet" class="cheat-sheet-clickable" data-lightbox="true" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 16px; cursor: zoom-in;" />`
         'big-o-cheat': `<img src="big-o-cheat-sheet-poster.png" alt="Big O Complexity Cheat Sheet" style="max-width: 100%; max-height: 100%; object-fit: contain;" />`
       };
       return `<div class="visual">${map[type] || ''}</div>`;
@@ -623,6 +684,40 @@
     }, { passive: true });
 
     render();
+
+      // Lightbox functionality for cheat sheet
+      const lightbox = document.querySelector('#lightbox');
+      const lightboxImage = document.querySelector('#lightboxImage');
+      const lightboxClose = document.querySelector('#lightboxClose');
+
+      function openLightbox(imageSrc) {
+        lightboxImage.src = imageSrc;
+        lightbox.classList.add('open');
+      }
+
+      function closeLightbox() {
+        lightbox.classList.remove('open');
+      }
+
+      lightboxClose.addEventListener('click', closeLightbox);
+      lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) closeLightbox();
+      });
+
+      document.addEventListener('click', (e) => {
+        if (e.target.dataset.lightbox === 'true') {
+          openLightbox(e.target.src);
+        }
+      });
+
+      // Allow Escape to close lightbox (without breaking presentation Escape handling)
+      const originalKeydownHandler = window.onkeydown;
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && lightbox.classList.contains('open')) {
+          e.preventDefault();
+          closeLightbox();
+        }
+      });
   </script>
 </body>
 </html>
