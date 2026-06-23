@@ -384,24 +384,6 @@
           ['Lookup', 'Can you find something by name or key quickly? Hash tables are designed for that.'],
           ['Explore', 'Can you move through a hierarchy or search many possibilities? Trees and graph search help here.']
         ]
-      },      {
-        title: 'Big O Notation: speaking the language of speed',
-        lead: 'Big O describes how an operation grows as data grows. O(n) means "proportional to data size," O(1) means "always the same," and O(n²) means "exponential slowdown." This is how engineers talk about efficiency.',
-        bullets: ['O(1) = constant time, no matter the size', 'O(n) = time grows with data', 'O(log n) = divide-and-conquer speed (searching)', 'O(n²) = nested loops, usually slow']
-      },
-      {
-        title: 'Big O in practice: three operations on an array',
-        lead: 'Consider [10, 20, 30, 40]. The same data structure has different complexity for different jobs. This is why choosing the right structure matters.',
-        compare: [
-          ['Get item at index 2', 'O(1) – jump directly to position 2, instant.'],
-          ['Find item by value (20)', 'O(n) – worst case, scan until you find it.'],
-          ['Insert 25 in sorted order', 'O(n) – shift items right, then insert (touches many items).']
-        ]
-      },
-      {
-        title: 'The Big O landscape',
-        lead: 'Each data structure excels at different tasks. The cheat sheet shows the complexity for operations on common structures. Better structures trade small wins elsewhere for huge wins where it matters.',
-        bullets: ['Arrays: fast access, slow insertion in the middle', 'Linked lists: flexible insertion, slow lookups', 'Hash tables: fast lookup by key, unordered', 'Trees: fast search and insertion when balanced']
       },
       {
         title: 'Arrays: the numbered shelf',
@@ -491,6 +473,25 @@
         bullets: ['Need direct indexed access: array', 'Need add/remove at ends: stack, queue, or linked list', 'Need key lookup: hash table or dictionary', 'Need hierarchy or ordered search: tree or BST']
       },
       {
+        title: 'Big O Notation: speaking the language of speed',
+        lead: 'Big O describes how an operation grows as data grows. O(n) means "proportional to data size," O(1) means "always the same," and O(n²) means "exponential slowdown." This is how engineers talk about efficiency.',
+        bullets: ['O(1) = constant time, no matter the size', 'O(n) = time grows with data', 'O(log n) = divide-and-conquer speed (searching)', 'O(n²) = nested loops, usually slow']
+      },
+      {
+        title: 'Big O in practice: three operations on an array',
+        lead: 'Consider [10, 20, 30, 40]. The same data structure has different complexity for different jobs. This is why choosing the right structure matters.',
+        compare: [
+          ['Get item at index 2', 'O(1) – jump directly to position 2, instant.'],
+          ['Find item by value (20)', 'O(n) – worst case, scan until you find it.'],
+          ['Insert 25 in sorted order', 'O(n) – shift items right, then insert (touches many items).']
+        ]
+      },
+      {
+        title: 'The Big O landscape',
+        lead: 'Each data structure excels at different tasks. The cheat sheet shows the complexity for operations on common structures. Better structures trade small wins elsewhere for huge wins where it matters.',
+        bullets: ['Arrays: fast access, slow insertion in the middle', 'Linked lists: flexible insertion, slow lookups', 'Hash tables: fast lookup by key, unordered', 'Trees: fast search and insertion when balanced']
+      },
+      {
         title: 'Trade-offs: The core principle',
         lead: 'No data structure is best at everything. When arrays give you O(1) lookup, insertion costs O(n). When hash tables give you fast lookup, you lose order. Every choice is a strategic trade-off based on your problem.',
         bullets: ['Arrays: O(1) access, O(n) insertion in the middle', 'Linked lists: O(n) access, O(1) insertion (if positioned)', 'Hash tables: O(1) lookup by key, no ordering', 'Trees: O(log n) search when balanced, slower unsorted']
@@ -517,7 +518,7 @@
       {
         title: 'Your reference: The Big O cheat sheet',
         lead: 'The cheat sheet maps every common data structure and sorting algorithm to its time and space complexity. Bookmark it. When you design code, this guide tells you whether your choice was fast or slow.',
-        bullets: ['Left side: data structures (arrays, linked lists, trees, etc.)', 'Right side: sorting algorithms (quicksort, merge sort, etc.)', 'Color coded: green = optimal, yellow = reasonable, red = avoid', 'Use this to argue why one structure beats another']
+        visual: 'big-o-cheat'
       },
       {
         title: 'Final thought',
@@ -553,7 +554,8 @@
         tree: `<div class="tree"><div class="tree-node">Root</div><div class="row"><div class="tree-node">Child</div><div class="tree-node">Child</div></div><div class="row"><div class="tree-node">Leaf</div><div class="tree-node">Leaf</div><div class="tree-node">Leaf</div></div></div><small>Hierarchy creates structure.</small>`,
         bst: `<div class="tree"><div class="tree-node">50</div><div class="row"><div class="tree-node">25</div><div class="tree-node">75</div></div><div class="row"><div class="tree-node">10</div><div class="tree-node">30</div><div class="tree-node">60</div><div class="tree-node">90</div></div></div><small>Left is smaller. Right is larger.</small>`,
         dfs: `<div class="tree"><div class="tree-node">A</div><div class="row"><div class="tree-node">B</div><div class="tree-node">C</div></div><div class="row"><div class="tree-node">D</div><div class="tree-node">E</div><div class="tree-node">F</div></div></div><small>Path idea: A → B → D, then backtrack.</small>`,
-        bfs: `<div class="tree"><div class="tree-node">A</div><div class="row"><div class="tree-node">B</div><div class="tree-node">C</div></div><div class="row"><div class="tree-node">D</div><div class="tree-node">E</div><div class="tree-node">F</div></div></div><small>Layer idea: A, then B/C, then D/E/F.</small>`
+        bfs: `<div class="tree"><div class="tree-node">A</div><div class="row"><div class="tree-node">B</div><div class="tree-node">C</div></div><div class="row"><div class="tree-node">D</div><div class="tree-node">E</div><div class="tree-node">F</div></div></div><small>Layer idea: A, then B/C, then D/E/F.</small>`,
+        'big-o-cheat': `<img src="big-o-cheat-sheet-poster.png" alt="Big O Complexity Cheat Sheet" style="max-width: 100%; max-height: 100%; object-fit: contain;" />`
       };
       return `<div class="visual">${map[type] || ''}</div>`;
     }
