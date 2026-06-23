@@ -350,8 +350,18 @@
         chips: ['Arrays', 'Lists', 'Stacks', 'Queues', 'Hash Tables', 'Trees', 'Search']
       },
       {
+        title: 'What are we optimizing?',
+        lead: 'A data structure is a way to organize data so some operations become easier, faster, or clearer. The main question is not “what is it called?” but “what job does it help me do?”',
+        compare: [
+          ['Access', 'Can you jump straight to the item you want? Arrays are strong here.'],
+          ['Update', 'Can you add or remove without too much rearranging? Linked lists and stacks often help.'],
+          ['Lookup', 'Can you find something by name or key quickly? Hash tables are designed for that.'],
+          ['Explore', 'Can you move through a hierarchy or search many possibilities? Trees and graph search help here.']
+        ]
+      },
+      {
         title: 'Arrays: the numbered shelf',
-        lead: 'An array is a fixed-size, indexed collection. When you know the position, lookup is fast—like grabbing book #4 from a numbered shelf.',
+        lead: 'An array is a fixed-size, indexed collection. If you already know the position, lookup is fast—like grabbing book #4 from a numbered shelf.',
         bullets: ['Best for fast lookups by index', 'Great for static storage', 'Often used underneath other data structures'],
         visual: 'array'
       },
@@ -368,20 +378,20 @@
         visual: 'doubly'
       },
       {
-        title: 'Stacks: last in, first out',
-        lead: 'A stack behaves like a pile of plates. The most recent item is the easiest one to remove.',
+        title: 'Stacks: LIFO, last in, first out',
+        lead: 'A stack behaves like a pile of plates. The most recent item is the easiest one to remove, which is why people often call it LIFO: last in, first out.',
         bullets: ['Undo and redo features', 'Backtracking problems', 'Depth-first search uses stack behavior'],
         visual: 'stack'
       },
       {
-        title: 'Queues: first in, first out',
-        lead: 'A queue behaves like a line at a coffee shop. The first item added is the first item served.',
+        title: 'Queues: FIFO, first in, first out',
+        lead: 'A queue behaves like a line at a coffee shop. The first item added is the first item served, which is why people call it FIFO: first in, first out.',
         bullets: ['Task scheduling', 'Order processing', 'Printer queues and request pipelines'],
         visual: 'queue'
       },
       {
         title: 'LIFO vs FIFO',
-        lead: 'These two rules describe who leaves first: the newest item or the oldest item.',
+        lead: 'These two rules describe who leaves first: the newest item or the oldest item. If a student remembers only one slide, this should be the contrast between “top of a stack” and “front of a queue.”',
         compare: [
           ['LIFO', 'Last in, first out. Think stack, undo button, browser backtracking.'],
           ['FIFO', 'First in, first out. Think queue, customer service line, printer jobs.']
@@ -401,31 +411,31 @@
       },
       {
         title: 'Trees: data with hierarchy',
-        lead: 'Trees represent parent-child relationships. They are perfect when data naturally branches into categories or decisions.',
+        lead: 'Trees represent parent-child relationships. They are useful when data naturally branches into categories or decisions, like folders, menus, or family trees.',
         bullets: ['File systems', 'Search algorithms', 'AI decision trees'],
         visual: 'tree'
       },
       {
-        title: 'Binary Search Trees: ordered branching',
-        lead: 'A binary search tree keeps smaller values on the left and larger values on the right. That ordering turns searching into a guided path.',
+        title: 'Binary Search Trees: optional next step',
+        lead: 'A binary search tree keeps smaller values on the left and larger values on the right. That ordering turns searching into a guided path, but it is easier to learn after plain trees feel familiar.',
         bullets: ['Efficient searching when balanced', 'Dynamic data storage', 'A bridge to more advanced trees'],
         visual: 'bst'
       },
       {
-        title: 'Depth-First Search: go deep first',
-        lead: 'DFS explores one path as far as possible, then backtracks. It is a natural fit for puzzles, mazes, and exploring possibilities.',
+        title: 'Depth-First Search: DFS, go deep first',
+        lead: 'DFS explores one path as far as possible, then backtracks. It is a natural fit for puzzles, mazes, and exploring possibilities when you want to fully chase one branch before the next.',
         bullets: ['Solving mazes', 'Pathfinding and graph traversal', 'Uses stack behavior, either explicit or through recursion'],
         visual: 'dfs'
       },
       {
-        title: 'Breadth-First Search: explore by layers',
-        lead: 'BFS checks all neighbors first, then moves outward level by level. That makes it useful when the shortest unweighted path matters.',
+        title: 'Breadth-First Search: BFS, explore by layers',
+        lead: 'BFS checks all neighbors first, then moves outward level by level. That makes it useful when the shortest unweighted path matters and you want the closest answers first.',
         bullets: ['Shortest path finding', 'Social network degrees of separation', 'Uses queue behavior'],
         visual: 'bfs'
       },
       {
         title: 'DFS vs BFS',
-        lead: 'Both search graphs and trees, but they ask different questions first: “How far can this path go?” versus “What is closest to me?”',
+        lead: 'Both search graphs and trees, but they ask different questions first: “How far can this path go?” versus “What is closest to me?” If the difference is unclear, remember stack for DFS and queue for BFS.',
         compare: [
           ['DFS', 'Stack-based, deeper exploration first. Strong for puzzles and exhaustive searching.'],
           ['BFS', 'Queue-based, level-by-level exploration. Strong for shortest paths.']
@@ -433,12 +443,21 @@
       },
       {
         title: 'How to choose',
-        lead: 'Start with the operation you care about most. Fast lookup? Frequent insertion? Ordered traversal? Shortest path?',
+        lead: 'Start with the operation you care about most. Fast lookup? Frequent insertion? Ordered traversal? Shortest path? The structure should follow the task, not the other way around.',
         bullets: ['Need direct indexed access: array', 'Need add/remove at ends: stack, queue, or linked list', 'Need key lookup: hash table or dictionary', 'Need hierarchy or ordered search: tree or BST']
       },
       {
+        title: 'Worked example: one collection, three questions',
+        lead: 'Suppose we start with the array [10, 20, 30]. The same data structure behaves differently depending on whether we insert, search, or delete.',
+        compare: [
+          ['Insert 25', 'Shift later items right, then place 25 in the open spot. The array stays ordered, but the operation touches multiple positions.'],
+          ['Search 20', 'Check the position directly if you already know the index, or scan until you find the value if you do not.'],
+          ['Delete 20', 'Remove the item, then shift later items left so the array has no gap.']
+        ]
+      },
+      {
         title: 'Final thought',
-        lead: 'Data structures are not just definitions to memorize. They are design choices. The right one makes your code simpler, faster, and easier to reason about.',
+        lead: 'Data structures are not just definitions to memorize. They are design choices. The right one makes your code simpler, faster, and easier to reason about, especially once you connect each structure to a specific operation.',
         chips: ['Organize', 'Search', 'Insert', 'Delete', 'Traverse', 'Optimize']
       }
     ];
