@@ -238,6 +238,25 @@
     .compare-card h3 { margin: 0 0 12px; font-size: clamp(26px, 4vw, 44px); }
     .compare-card p { color: var(--muted); font-size: 20px; line-height: 1.45; margin: 0; }
 
+    .poster-slide {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(124, 58, 237, 0.2));
+      border: 2px solid rgba(59, 130, 246, 0.4);
+      overflow: hidden;
+    }
+    .poster-image { 
+      width: 100%; 
+      height: 100%;
+      display: grid;
+      place-items: center;
+      padding: 0;
+    }
+    .poster-image img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 20px;
+    }
+
     .controls {
       position: fixed;
       left: 50%;
@@ -343,6 +362,13 @@
   <script>
     const slides = [
       {
+        type: 'title-image',
+        poster: true,
+        title: 'Virtual Essential Data Structures Workshop',
+        lead: 'Master the concepts that power coding interviews and real-world applications. For Software Development Students & Graduates.',
+        eyebrow: 'ECPI University'
+      },
+      {
         type: 'title',
         eyebrow: 'Computer Science Fundamentals',
         title: 'Essential Data Structures',
@@ -358,6 +384,24 @@
           ['Lookup', 'Can you find something by name or key quickly? Hash tables are designed for that.'],
           ['Explore', 'Can you move through a hierarchy or search many possibilities? Trees and graph search help here.']
         ]
+      },      {
+        title: 'Big O Notation: speaking the language of speed',
+        lead: 'Big O describes how an operation grows as data grows. O(n) means "proportional to data size," O(1) means "always the same," and O(n²) means "exponential slowdown." This is how engineers talk about efficiency.',
+        bullets: ['O(1) = constant time, no matter the size', 'O(n) = time grows with data', 'O(log n) = divide-and-conquer speed (searching)', 'O(n²) = nested loops, usually slow']
+      },
+      {
+        title: 'Big O in practice: three operations on an array',
+        lead: 'Consider [10, 20, 30, 40]. The same data structure has different complexity for different jobs. This is why choosing the right structure matters.',
+        compare: [
+          ['Get item at index 2', 'O(1) – jump directly to position 2, instant.'],
+          ['Find item by value (20)', 'O(n) – worst case, scan until you find it.'],
+          ['Insert 25 in sorted order', 'O(n) – shift items right, then insert (touches many items).']
+        ]
+      },
+      {
+        title: 'The Big O landscape',
+        lead: 'Each data structure excels at different tasks. The cheat sheet shows the complexity for operations on common structures. Better structures trade small wins elsewhere for huge wins where it matters.',
+        bullets: ['Arrays: fast access, slow insertion in the middle', 'Linked lists: flexible insertion, slow lookups', 'Hash tables: fast lookup by key, unordered', 'Trees: fast search and insertion when balanced']
       },
       {
         title: 'Arrays: the numbered shelf',
@@ -447,6 +491,21 @@
         bullets: ['Need direct indexed access: array', 'Need add/remove at ends: stack, queue, or linked list', 'Need key lookup: hash table or dictionary', 'Need hierarchy or ordered search: tree or BST']
       },
       {
+        title: 'Trade-offs: The core principle',
+        lead: 'No data structure is best at everything. When arrays give you O(1) lookup, insertion costs O(n). When hash tables give you fast lookup, you lose order. Every choice is a strategic trade-off based on your problem.',
+        bullets: ['Arrays: O(1) access, O(n) insertion in the middle', 'Linked lists: O(n) access, O(1) insertion (if positioned)', 'Hash tables: O(1) lookup by key, no ordering', 'Trees: O(log n) search when balanced, slower unsorted']
+      },
+      {
+        title: 'Recognized patterns: where to use each',
+        lead: 'Programming returns to the same patterns over and over. Learning these mappings between problem type and structure type speeds up design and debugging.',
+        compare: [
+          ['Undo/redo', 'Stack. Most recent action goes first.'],
+          ['Task queue', 'Queue. First job submitted should run first.'],
+          ['Autocomplete', 'Hash table or trie. Fast key lookups.'],
+          ['File system', 'Tree. Folders branch into subfolders.']
+        ]
+      },
+      {
         title: 'Worked example: one collection, three questions',
         lead: 'Suppose we start with the array [10, 20, 30]. The same data structure behaves differently depending on whether we insert, search, or delete.',
         compare: [
@@ -456,9 +515,21 @@
         ]
       },
       {
+        title: 'Your reference: The Big O cheat sheet',
+        lead: 'The cheat sheet maps every common data structure and sorting algorithm to its time and space complexity. Bookmark it. When you design code, this guide tells you whether your choice was fast or slow.',
+        bullets: ['Left side: data structures (arrays, linked lists, trees, etc.)', 'Right side: sorting algorithms (quicksort, merge sort, etc.)', 'Color coded: green = optimal, yellow = reasonable, red = avoid', 'Use this to argue why one structure beats another']
+      },
+      {
         title: 'Final thought',
         lead: 'Data structures are not just definitions to memorize. They are design choices. The right one makes your code simpler, faster, and easier to reason about, especially once you connect each structure to a specific operation.',
         chips: ['Organize', 'Search', 'Insert', 'Delete', 'Traverse', 'Optimize']
+      },
+      {
+        type: 'title',
+        eyebrow: 'Next Steps',
+        title: 'Ready to go deeper?',
+        lead: 'Join the ECPI Virtual Essential Data Structures Workshop to practice these concepts through real coding challenges, interview prep, and advanced patterns. You now have the foundation—master the application.',
+        chips: ['Practice Problems', 'Interview Questions', 'Real-World Code', 'Build Confidence']
       }
     ];
 
@@ -492,6 +563,11 @@
       const chips = s.chips ? `<div class="chips">${s.chips.map(c => `<span class="chip">${c}</span>`).join('')}</div>` : '';
       const bullets = s.bullets ? `<ul class="bullets">${s.bullets.map(b => `<li>${b}</li>`).join('')}</ul>` : '';
       const compare = s.compare ? `<div class="big-compare">${s.compare.map(([h,p]) => `<div class="compare-card"><h3>${h}</h3><p>${p}</p></div>`).join('')}</div>` : '';
+      
+      if (s.type === 'title-image' && s.poster) {
+        return `<section class="slide" data-title="${s.title}"><article class="panel poster-slide"><div class="poster-image"><img src="image.png" alt="ECPI Virtual Essential Data Structures Workshop" /></div></article></section>`;
+      }
+      
       if (s.visual) {
         return `<section class="slide" data-title="${s.title}"><article class="panel"><div class="content"><div class="eyebrow">${eyebrow}</div><h2>${s.title}</h2><div class="two-col"><div><p class="lead">${s.lead}</p>${bullets}</div>${visual(s.visual)}</div></div></article></section>`;
       }
