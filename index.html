@@ -403,6 +403,13 @@
 
   <div class="help">Shortcuts: <span class="kbd">←</span> <span class="kbd">→</span> <span class="kbd">Space</span> <span class="kbd">O</span> <span class="kbd">Esc</span></div>
 
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Close magnified image">&times;</button>
+    <div class="lightbox-content">
+      <img id="lightboxImage" src="" alt="Magnified image" />
+    </div>
+  </div>
+
   <section class="overview" id="overview" aria-modal="true" role="dialog" aria-label="Slide overview">
     <div class="overview-inner">
       <div class="overview-head">
@@ -416,12 +423,6 @@
   <script>
     const slides = [
       {
-        <div class="lightbox" id="lightbox">
-          <button class="lightbox-close" id="lightboxClose">&times;</button>
-          <div class="lightbox-content">
-            <img id="lightboxImage" src="" alt="Magnified image" />
-          </div>
-        </div>
         type: 'title-image',
         poster: true,
         title: 'Virtual Essential Data Structures Workshop',
@@ -615,8 +616,7 @@
         bst: `<div class="tree"><div class="tree-node">50</div><div class="row"><div class="tree-node">25</div><div class="tree-node">75</div></div><div class="row"><div class="tree-node">10</div><div class="tree-node">30</div><div class="tree-node">60</div><div class="tree-node">90</div></div></div><small>Left is smaller. Right is larger.</small>`,
         dfs: `<div class="tree"><div class="tree-node">A</div><div class="row"><div class="tree-node">B</div><div class="tree-node">C</div></div><div class="row"><div class="tree-node">D</div><div class="tree-node">E</div><div class="tree-node">F</div></div></div><small>Path idea: A → B → D, then backtrack.</small>`,
         bfs: `<div class="tree"><div class="tree-node">A</div><div class="row"><div class="tree-node">B</div><div class="tree-node">C</div></div><div class="row"><div class="tree-node">D</div><div class="tree-node">E</div><div class="tree-node">F</div></div></div><small>Layer idea: A, then B/C, then D/E/F.</small>`,
-          'big-o-cheat': `<img src="big-o-cheat-sheet-poster.png" alt="Big O Complexity Cheat Sheet" class="cheat-sheet-clickable" data-lightbox="true" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 16px; cursor: zoom-in;" />`
-        'big-o-cheat': `<img src="big-o-cheat-sheet-poster.png" alt="Big O Complexity Cheat Sheet" style="max-width: 100%; max-height: 100%; object-fit: contain;" />`
+        'big-o-cheat': `<img src="big-o-cheat-sheet-poster.png" alt="Big O Complexity Cheat Sheet" class="cheat-sheet-clickable" data-lightbox="true" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 16px; cursor: zoom-in;" />`
       };
       return `<div class="visual">${map[type] || ''}</div>`;
     }
